@@ -1,15 +1,14 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const cors = require('cors');
-require('dotenv').config();
+const cors = require("cors");
+require("dotenv").config();
 const port = process.env.PORT || 5000;
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zynq1cd.mongodb.net/?retryWrites=true&w=majority`;
 console.log(process.env.DB_USER);
 console.log(process.env.DB_PASS);
@@ -20,32 +19,27 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
   try {
-    
     await client.connect();
 
-    
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
   } finally {
     // await client.close();
   }
 }
 run().catch(console.dir);
 
-
-
-
-app.get('/', (req, res)=>{
-    res.send('welcome to bistro boss')
-})
-
-app.listen(port, ()=>{
-    console.log(`listening on port, ${port}`)
+app.get("/", (req, res) => {
+  res.send("welcome to bistro boss");
 });
 
-
+app.listen(port, () => {
+  console.log(`listening on port, ${port}`);
+});
