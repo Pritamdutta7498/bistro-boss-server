@@ -10,8 +10,6 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zynq1cd.mongodb.net/?retryWrites=true&w=majority`;
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASS);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -25,6 +23,22 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+
+    const menuCollection = client.db("bistroDb").collection("menu");
+    const reviewCollection = client.db("bistroDb").collection("reviews");
+    const cartCollection = client.db("bistroDb").collection("carts");
+    // get menu data from collection
+    app.get("/menu", async (req, res) => {
+      const result =  await menuCollection.find().toArray();
+      res.send(result);
+    });
+    // get review data from collection
+    app.get('/reviews', async(req, res)=>{
+      const result = await reviewCollection.find().toArray();
+      res.send(result)
+    })
+
+
 
     await client.db("admin").command({ ping: 1 });
     console.log(
