@@ -26,49 +26,55 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const userCollection = client.db("bistroDb").collection("users");
+    const menuCollection = client.db("bistroDb").collection("menu");
+    const reviewCollection = client.db("bistroDb").collection("reviews");
+    const cartCollection = client.db("bistroDb").collection("carts");
+
+    //get user related information
+    app.post('/users', async(req, res)=>{
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
+      console.log(users);
+      res.send(result); 
     
-const menuCollection = client.db("bistroDb").collection("menu");
-const reviewCollection = client.db("bistroDb").collection("reviews");
-const cartCollection = client.db("bistroDb").collection("carts");
-// get menu data from collection
-app.get("/menu", async (req, res) => {
-  const result =  await menuCollection.find().toArray();
-  res.send(result);
-});
-// get review data from collection
-app.get('/reviews', async(req, res)=>{
-  const result = await reviewCollection.find().toArray();
-  res.send(result)
-})
+    })
+    // get menu data from collection
+    app.get("/menu", async (req, res) => {
+      const result = await menuCollection.find().toArray();
+      res.send(result);
+    });
+    // get review data from collection
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewCollection.find().toArray();
+      res.send(result);
+    });
 
-//insert cart data into  cart collection
-//get multiple data with email
-app.get('/carts', async(req, res)=>{
-  const  email = req.query.email;
-  // console.log(email);
-  if(!email){
-    res.send([]);
-  }
-  const query = {email: email}
-  const result = await cartCollection.find(query).toArray();
-  res.send(result);
-
-});
-app.post('/carts', async (req, res) =>{
-  const item = req.body;
-  // console.log(item);
-  const result = await cartCollection.insertOne(item);
-  res.send(result)
-})
-//delete cart item from cart collection
-app.delete('/carts/:id', async(req, res)=>{
-  const id = req.params.id;
-  const query = {_id: new ObjectId(id)};
-  const result = await cartCollection.deleteOne(query);
-  res.send(result)
-})
-
-
+    //insert cart data into  cart collection
+    //get multiple data with email
+    app.get("/carts", async (req, res) => {
+      const email = req.query.email;
+      // console.log(email);
+      if (!email) {
+        res.send([]);
+      }
+      const query = { email: email };
+      const result = await cartCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/carts", async (req, res) => {
+      const item = req.body;
+      // console.log(item);
+      const result = await cartCollection.insertOne(item);
+      res.send(result);
+    });
+    //delete cart item from cart collection
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
