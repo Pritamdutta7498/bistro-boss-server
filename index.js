@@ -32,12 +32,13 @@ async function run() {
     const cartCollection = client.db("bistroDb").collection("carts");
 
     //get user related information
+    app.get('/users', async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    })
     app.post("/users", async (req, res) => {
       const user = req.body;
-      // console.log(user);
-
       const query = { email: user.email, name: user.name };
-
       const existingUser = await userCollection.findOne(query);
       // console.log('existing user', existingUser);
       if (existingUser) {
