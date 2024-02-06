@@ -78,7 +78,7 @@ async function run() {
     };
 
     //get user related information
-    app.get("/users", verifyJWT,verifyAdmin, async (req, res) => {
+    app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
     });
@@ -127,6 +127,14 @@ async function run() {
       const result = await menuCollection.find().toArray();
       res.send(result);
     });
+
+    //api for admin add item
+    app.post("/menu", async (req, res) => {
+      const newItem = req.body;
+      const result = await menuCollection.insertOne(newItem);
+      res.send(result);
+    });
+
     // get review data from collection
     app.get("/reviews", async (req, res) => {
       const result = await reviewCollection.find().toArray();
