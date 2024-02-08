@@ -135,6 +135,14 @@ async function run() {
       res.send(result);
     });
 
+    // api for delete the menu item from mangeItem in admin dashboard
+    app.delete("/menu/:id", verifyJWT, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await menuCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // get review data from collection
     app.get("/reviews", async (req, res) => {
       const result = await reviewCollection.find().toArray();
